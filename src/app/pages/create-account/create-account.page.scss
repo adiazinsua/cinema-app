@@ -1,0 +1,24 @@
+.form-container {
+  display: flex;
+  flex-direction: column;
+  // justify-content: space-between;
+  height: 100%;
+}
+
+.conditions {
+  margin: 0.25rem 0 0 1.5rem;
+  font-size: 14px;
+
+  ion-icon {
+    font-size: 18px;
+  }
+
+  ion-row {
+    margin-bottom: 0.25em;
+  }
+}
+
+.ml-0-5 {
+  margin-left: 0.5rem;
+  color: var(--ion-color-gray);
+}
