@@ -1,0 +1,46 @@
+ion-item {
+  --background: none;
+  --border-radius: 0.75rem;
+  --min-height: 200px;
+  --color: #aaa;
+  --border-width: 2px;
+
+  width: 100%;
+
+  &.image-cont {
+    --border-color: var(--ion-color-primary);
+    --border-style: solid;
+    --border-width: 1px;
+
+    --inner-padding-end: 0px;
+    --padding-start: 0px;
+  }
+}
+
+.preview-image {
+  width: 100%;
+  height: 100%;
+  max-height: 200px;
+  object-fit: cover;
+}
+
+.info-cont {
+  font-size: 1.2rem;
+  color: #aaa;
+
+  ion-icon {
+    font-size: 1.5rem;
+  }
+
+  .date {
+    font-size: 1rem;
+  }
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+.pl-2 {
+  padding-left: 0.5rem;
+}

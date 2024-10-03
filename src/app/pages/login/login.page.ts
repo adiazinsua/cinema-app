@@ -3,12 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavController } from '@ionic/angular';
 import { routes } from 'src/app/app.routes';
 import { LoginRequest } from 'src/app/models/login/login-request.model';
-import { AuthService } from 'src/app/services/auth.service';
+import { UserService } from 'src/app/services/users.service';
 import { ToastService } from 'src/app/services/toasts.service';
 
-
-const DEFAULT_API_ERROR_MESSAGE = 'Something went wrong!';
-const INVALID_CREDENTIALS_ERROR_MESSAGE = 'Invalid username or password';
 const INVALID_FORM_ERROR_MESSAGE = 'All fields are required';
 
 @Component({
@@ -20,7 +17,7 @@ export class LoginPage implements OnInit {
   public form: FormGroup;
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService,
+    private userService: UserService,
     private toastService: ToastService,
     private navController: NavController
   ) {
@@ -30,10 +27,11 @@ export class LoginPage implements OnInit {
     });
   }
 
-  ngOnInit() { }
-
-  changeIcon() {
-    console.log('icon');
+  ngOnInit() {
+    const successMessage = history?.state?.successMessage;
+    if (successMessage) {
+      this.setSuccessMessage(successMessage);
+    }
   }
 
   get passwordHasValue() {
@@ -53,19 +51,13 @@ export class LoginPage implements OnInit {
     request.email = this.form.value.email;
     request.plainPassword = this.form.value.password;
 
-    this.authService.login(request).then((response) => {
-      if (response.success) {
-        this.redirectToHome();
+    this.userService.login(request).subscribe((response) => {
+      if (response.errorMessage) {
+        this.setErrorMessage(response.errorMessage);
         return;
       }
 
-      if (response.errorCode) {
-        if (response.errorCode == 'auth/invalid-credential') {
-          this.setErrorMessage(INVALID_CREDENTIALS_ERROR_MESSAGE);
-        } else {
-          this.setErrorMessage(DEFAULT_API_ERROR_MESSAGE);
-        }
-      }
+      this.redirectToHome();
     });
   }
 
@@ -77,8 +69,16 @@ export class LoginPage implements OnInit {
     this.navController.navigateRoot([routes.home()]);
   }
 
+  redirectToPasswordRecovery() {
+    this.navController.navigateForward([routes.passwordRecovery()]);
+  }
+
   async setErrorMessage(message: string) {
     await this.toastService.error(message);
+  }
+
+  async setSuccessMessage(message: string) {
+    await this.toastService.success(message);
   }
 
   async clearToast() {

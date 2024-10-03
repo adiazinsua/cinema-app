@@ -1,0 +1,74 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">Close</ion-button>
+    </ion-buttons>
+    <ion-title>Add movie</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+  <form [formGroup]="form">
+    <ion-item
+      class="text-center"
+      lines="none"
+      (click)="fileInput.click()"
+      [ngClass]="previewUrl ? 'image-cont' : 'dashed-cont'"
+    >
+      <input
+        type="file"
+        #fileInput
+        (change)="onFileSelected($event)"
+        accept="image/*"
+        hidden
+      />
+
+      <div class="ion-text-center w-100">
+        @if (!previewUrl) {
+        <ion-icon name="image-outline"></ion-icon>
+        <ion-label>Upload image<ion-text color="danger">*</ion-text></ion-label>
+
+        } @else {
+        <img [src]="previewUrl" alt="Selected Image" class="preview-image" />
+
+        }
+      </div>
+    </ion-item>
+
+    <ion-input
+      class="mt-4"
+      labelPlacement="floating"
+      formControlName="title"
+      fill="outline"
+      mode="md"
+    >
+      <div slot="label">Title <ion-text color="danger">*</ion-text></div>
+    </ion-input>
+    <div
+      class="error-message"
+      *ngIf="form.controls['title'].touched && form.controls['title'].errors?.['required']"
+    >
+      <ion-text color="danger">Title is required</ion-text>
+    </div>
+
+    <ion-textarea
+      class="mt-4"
+      labelPlacement="floating"
+      formControlName="description"
+      fill="outline"
+      mode="md"
+      [counter]="true"
+      maxlength="300"
+      rows="9"
+      [errorText]="'Description is required'"
+    >
+      <div slot="label">Description<ion-text color="danger">*</ion-text></div>
+    </ion-textarea>
+  </form>
+
+  <ion-button
+    class="btn-block mt-3"
+    (click)="addMovie()"
+    [disabled]="!shouldEnableSubmitBtn"
+    >Submit</ion-button
+  >
+</ion-content>

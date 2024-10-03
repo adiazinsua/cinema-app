@@ -1,0 +1,36 @@
+<ion-toolbar class="">
+  <ion-title>Change avatar</ion-title>
+  <ion-buttons slot="start" class="ion-padding">
+    <ion-back-button default-href="#" text=""></ion-back-button>
+  </ion-buttons>
+</ion-toolbar>
+
+<ion-content class="ion-padding-horizontal">
+  <div class="avatar-container">
+    <img [src]="selectedAvatarUrl || user?.avatarUrl" class="avatar-img" />
+  </div>
+
+  <ion-row class="ion-align-items-center ion-justify-content-center mt-3">
+    <h3>Select an avatar</h3>
+  </ion-row>
+  <ion-list class="icons-list">
+    <ion-item
+      *ngFor="let avatar of avatars"
+      (click)="selectAvatar(avatar.url)"
+      lines="none"
+    >
+      <img
+        [src]="avatar.url"
+        class="icon-option"
+        [ngClass]="avatar.url === this.selectedAvatarUrl ? 'selected-avatar' : 'unselected-avatar'"
+      />
+    </ion-item>
+  </ion-list>
+
+  <ion-button
+    expand="block"
+    (click)="saveAvatar()"
+    class="ion-margin-horizontal mt-5"
+    >Save</ion-button
+  >
+</ion-content>

@@ -1,24 +1,27 @@
 <ion-content>
-  <div class="container ion-align-items-center">
+  <div class="container ion-align-items-center ion-justify-content-center">
     <form class="login" [formGroup]="form">
-      <!-- <img class="logo mb-8" src="../../../assets/img/cinema-logo.png" alt="logo"> -->
       <div class="d-flex ion-justify-content-center">
-        <ion-img
-          class="icon ion-justify-content-center"
-          src="https://docs-demo.ionic.io/assets/madison.jpg"
-          alt="The Wisconsin State Capitol building in Madison, WI at night"
-        ></ion-img>
+        <ion-icon class="icon" name="film-outline"></ion-icon>
       </div>
 
       <ion-input
+        labelPlacement="stacked"
         formControlName="email"
         fill="outline"
-        placeholder="Email"
-        shape="round"
         mode="md"
-      />
-      <div class="error-message" *ngIf="form.controls['email'].touched && form.controls['email'].invalid">
-        <ion-text color="danger" *ngIf="form.controls['email'].errors?.['required']"
+        placeholder="Enter your email"
+        class="mt-5"
+      >
+        <div slot="label">Email</div>
+      </ion-input>
+      <div
+        class="error-message"
+        *ngIf="form.controls['email'].touched && form.controls['email'].invalid"
+      >
+        <ion-text
+          color="danger"
+          *ngIf="form.controls['email'].errors?.['required']"
           >Email is required</ion-text
         >
         <ion-text
@@ -31,12 +34,14 @@
       <ion-input
         formControlName="password"
         fill="outline"
-        placeholder="Password"
-        shape="round"
         type="password"
         mode="md"
         class="mt-3"
+        labelPlacement="stacked"
+        placeholder="Enter your password"
       >
+        <div slot="label">Password</div>
+
         <ion-input-password-toggle
           slot="end"
           color="light"
@@ -49,7 +54,6 @@
         <ion-text color="danger">Password is required</ion-text>
       </div>
 
-      <!-- <div class="mt-4 ion-align-items-center"> -->
       <ion-button
         class="btn-block mt-4"
         shape="round"
@@ -66,9 +70,13 @@
       >
         New here? Create an account
       </ion-button>
-      <!-- </div> -->
     </form>
 
-    <ion-button fill="clear" id="open-modal">Forgot password?</ion-button>
+    <ion-button
+      fill="clear"
+      id="open-modal"
+      (click)="redirectToPasswordRecovery()"
+      >Forgot password?</ion-button
+    >
   </div>
 </ion-content>

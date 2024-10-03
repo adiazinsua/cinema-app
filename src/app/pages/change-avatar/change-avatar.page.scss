@@ -1,0 +1,50 @@
+.avatar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+
+  img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 2px solid var(--ion-color-primary);
+  }
+}
+
+.icons-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  ion-item {
+    width: auto;
+    margin: 0.5rem;
+    --min-height: 0;
+
+    .icon-option {
+      width: 75px;
+      height: 75px;
+      border-radius: 50%;
+    }
+  }
+
+  img {
+    border: 3px solid gray;
+    &.selected-avatar {
+      border-color: var(--ion-color-primary);
+    }
+
+    &.unselected-avatar {
+      border-color: gray;
+    }
+  }
+}
+
+ion-list {
+  background: none;
+}
+
+ion-item {
+  --background: none;
+}

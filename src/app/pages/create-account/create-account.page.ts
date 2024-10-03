@@ -1,7 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import {
   AbstractControl,
-  Form,
   FormBuilder,
   FormGroup,
   ValidationErrors,
@@ -12,8 +11,10 @@ import { ActivatedRoute } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import { routes } from 'src/app/app.routes';
 import { CreateAccountRequest } from 'src/app/models/create-account/create-account-request.model';
-import { AuthService } from 'src/app/services/auth.service';
 import { ToastService } from 'src/app/services/toasts.service';
+import { UserService } from 'src/app/services/users.service';
+
+const ACCOUNT_CREATED_SUCCESS_MESSAGE = 'Account created successfully! You can now log in to your new account'
 
 export function SamePasswordBothInputs(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -28,7 +29,6 @@ export function SamePasswordBothInputs(): ValidatorFn {
         return { passwordMismatch: true };
       }
     }
-
     return null;
   };
 }
@@ -39,8 +39,6 @@ export function SamePasswordBothInputs(): ValidatorFn {
   styleUrls: ['./create-account.page.scss'],
 })
 export class CreateAccountPage implements OnInit {
-  public folder!: string;
-
   private activatedRoute = inject(ActivatedRoute);
 
   public form: FormGroup;
@@ -56,7 +54,7 @@ export class CreateAccountPage implements OnInit {
     private fb: FormBuilder,
     private toastService: ToastService,
     private navController: NavController,
-    private authService: AuthService
+    private userService: UserService
   ) {
     this.form = this.fb.group(
       {
@@ -70,7 +68,6 @@ export class CreateAccountPage implements OnInit {
   }
 
   ngOnInit() {
-    this.folder = this.activatedRoute.snapshot.paramMap.get('id') as string;
   }
 
   create() {
@@ -80,18 +77,14 @@ export class CreateAccountPage implements OnInit {
     request.plainPassword = this.form.value.password;
     request.name = this.form.value.name;
 
-    this.authService.createAccount(request).then((response) => {
-      if (response.success) {
-        console.log('login exitoso');
-        //redirect
+    this.userService.createAccount(request).subscribe((response) => {
+      if (response.errorMessage) {
+        this.setErrorMessage(response.errorMessage);
         return;
       }
 
-      if (response.errorCode) {
-        this.setErrorMessage('error al crear');
-        return;
-      }
-    });
+      this.redirectToLoginWithMessage(ACCOUNT_CREATED_SUCCESS_MESSAGE)
+    })
   }
 
   get showPasswordRequirements(): boolean {
@@ -112,8 +105,8 @@ export class CreateAccountPage implements OnInit {
     );
   }
 
-  redirectToLogin() {
-    this.navController.navigateRoot([routes.login()]);
+  redirectToLoginWithMessage(message: string = '') {
+    this.navController.navigateRoot([routes.login()], { state: { successMessage: message } });
   }
 
   async setErrorMessage(message: string) {

@@ -7,10 +7,9 @@ import { EventType, Router } from '@angular/router';
   providedIn: 'root',
 })
 export class ToastService {
-  private static ERROR_DEFAULT_DURATION = 1000 * 20;
-  private static NO_CONNECTION_TOAST_ID = 'noConnectionToast';
+  private static DEFAULT_DURATION = 1000 * 20;
 
-  private errorToastButtons: ToastButton[] = [
+  private toastButtons: ToastButton[] = [
     {
       icon: 'close-outline',
       role: 'cancel',
@@ -33,41 +32,16 @@ export class ToastService {
 
   async error(
     message: string,
-    durationMsec: number = ToastService.ERROR_DEFAULT_DURATION
+    durationMsec: number = ToastService.DEFAULT_DURATION
   ) {
     const toast = await this.toastController.create({
       message: message,
       duration: durationMsec,
       color: 'danger',
       position: 'top',
-      buttons: this.errorToastButtons,
+      buttons: this.toastButtons,
     });
     await toast.present();
-  }
-
-  async noConnectionToast(message: string) {
-    const existingToast = await this.toastController.getTop();
-
-    if (existingToast?.id == ToastService.NO_CONNECTION_TOAST_ID) {
-      return;
-    }
-
-    const toast = await this.toastController.create({
-      message: message,
-      //   duration: null,
-      color: 'danger',
-      position: 'top',
-      id: ToastService.NO_CONNECTION_TOAST_ID,
-    });
-    await toast.present();
-  }
-
-  async dismissNoConnectionToast() {
-    const toast = await this.toastController.getTop();
-
-    if (toast?.id == ToastService.NO_CONNECTION_TOAST_ID) {
-      await toast.dismiss();
-    }
   }
 
   async dismissAllToasts() {
@@ -75,5 +49,19 @@ export class ToastService {
     if (toast) {
       await toast.dismiss();
     }
+  }
+
+  async success(
+    message: string,
+    durationMsec: number = ToastService.DEFAULT_DURATION
+  ) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: durationMsec,
+      color: 'success',
+      position: 'top',
+      buttons: this.toastButtons,
+    });
+    await toast.present();
   }
 }

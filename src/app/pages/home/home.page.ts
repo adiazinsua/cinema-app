@@ -1,16 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NavController } from '@ionic/angular';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { ModalController, NavController } from '@ionic/angular';
 import { routes } from 'src/app/app.routes';
 import { LoginRequest } from 'src/app/models/login/login-request.model';
-import { AuthService } from 'src/app/services/auth.service';
-import { StorageService, User } from 'src/app/services/storage.service';
+import { Movie } from 'src/app/models/movies/movie';
+import { MovieService } from 'src/app/services/movies.service';
+import { StorageService } from 'src/app/services/storage.service';
 import { ToastService } from 'src/app/services/toasts.service';
-// import { UsersService } from 'src/app/services/users.service';
+import { AddmovieModalComponent } from 'src/app/modals/add-movie/add-movie.component';
+import { debounceTime } from 'rxjs';
+import { UserService } from 'src/app/services/users.service';
 
-const DEFAULT_API_ERROR_MESSAGE = 'Something went wrong!';
-const INVALID_CREDENTIALS_ERROR_MESSAGE = 'Invalid username or password';
-const INVALID_FORM_ERROR_MESSAGE = 'All fields are required';
+const MOVIE_ADDED_SUCCESS_MESSAGE = 'Movie added successfully!';
 
 @Component({
   selector: 'app-home',
@@ -18,69 +19,103 @@ const INVALID_FORM_ERROR_MESSAGE = 'All fields are required';
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit {
-  private user?: User;
-  public userName?: string;
-  // public form: FormGroup;
+
+  public user: any;
+  public movies: Movie[] = [];
+  public moviesLoading: boolean = false;
+
+  filteredMovies: Movie[] = [];
+  showSearchBar = false;
+
+  searchControl = new FormControl('');
 
   constructor(
-    private authService: AuthService,
+    private userService: UserService,
     private toastService: ToastService,
     private navController: NavController,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private movieService: MovieService,
+    private modalCtrl: ModalController
   ) {
-
-  }
-
-  ngOnInit() {
-    this.storageService.getUser().then(user => {
-      this.user = user as User;
-      this.userName = user?.name;
+    this.searchControl.valueChanges.pipe(debounceTime(300)).subscribe((value: any) => {
+      this.filterMovies(value);
     });
   }
 
-  changeIcon() {
-    console.log('icon');
+  ngOnInit() {
+    const successMessage = history?.state?.successMessage;
+    if (successMessage) {
+      this.setSuccessMessage(successMessage);
+    }
+
+    this.storageService.getItem('user').then(user => {
+      if (user != null) {
+        this.user = user;
+
+        this.getMovies();
+      } else {
+        this.redirectToLogin();
+      }
+    });
+  }
+
+  getMovies() {
+    this.moviesLoading = true;
+    this.movieService.getMovies(this.user.uid).subscribe((response) => {
+      this.movies = response;
+      console.log(response)
+      this.moviesLoading = false;
+      this.filteredMovies = [...this.movies];
+    })
+  }
+
+  toggleSearchBar() {
+    this.showSearchBar = !this.showSearchBar;
+
+    if (!this.showSearchBar) {
+      this.searchControl.setValue('');
+      this.filteredMovies = [...this.movies];
+    }
+  }
+
+  filterMovies(term: string) {
+    const lowerTerm = term.toLowerCase();
+    this.filteredMovies = this.movies.filter(movie =>
+      movie.title.toLowerCase().includes(lowerTerm)
+    );
+  }
+
+  changeAvatar() {
+    console.log('navigaate forward')
+    console.log(this.user)
+    this.navController.navigateRoot([routes.changeAvatar()], { state: { user: this.user } })
   }
 
   logout() {
-    this.authService.logout().then(() => this.redirectToLogin())
+    this.userService.logout().subscribe((response) => {
+      if (response.errorMessage) {
+        this.setErrorMessage(response.errorMessage);
+        return;
+      }
+      this.redirectToLogin();
+    });
   }
-  // get passwordHasValue() {
-  //   return this.form.value.password != null;
-  // }
 
-  // login() {
-  //   this.clearToast();
+  async openAddMovieModal() {
+    this.clearToast();
+    const modal = await this.modalCtrl.create({
+      component: AddmovieModalComponent,
+      componentProps: { userId: this.user.uid }
+    });
+    modal.present();
 
-  //   if (this.form.invalid) {
-  //     this.setErrorMessage(INVALID_FORM_ERROR_MESSAGE);
-  //     this.form.markAllAsTouched();
-  //     return;
-  //   }
+    const { data, role } = await modal.onWillDismiss();
 
-  //   const request = new LoginRequest();
-  //   request.email = this.form.value.email;
-  //   request.plainPassword = this.form.value.password;
-
-  // this.usersService.login(request).subscribe((response) => {
-  //   console.log(response);
-  //   if (response.success) {
-  //     // guardosesion
-  //     console.log('Login exitoso', response);
-
-  //     // this.navCtrl.navigateForward('/dashboard');
-  //     return;
-  //   }
-
-  //   if (response.errorCode) {
-  //     if (response.errorCode == 'auth/invalid-credential') {
-  //       this.setErrorMessage(INVALID_CREDENTIALS_ERROR_MESSAGE);
-  //     } else {
-  //       this.setErrorMessage(DEFAULT_API_ERROR_MESSAGE);
-  //     }
-  //   }
-  // });
-  // }
+    if (role === 'success') {
+      this.setSuccessMessage(MOVIE_ADDED_SUCCESS_MESSAGE);
+      this.getMovies();
+    }
+  }
 
   redirectToLogin() {
     this.navController.navigateRoot([routes.login()]);
@@ -90,7 +125,16 @@ export class HomePage implements OnInit {
     await this.toastService.error(message);
   }
 
+  async setSuccessMessage(message: string) {
+    await this.toastService.success(message);
+  }
+
   async clearToast() {
     await this.toastService.dismissAllToasts();
+  }
+
+  setMessageAfterDeletion(message: string) {
+    this.setSuccessMessage(message);
+    this.getMovies();
   }
 }

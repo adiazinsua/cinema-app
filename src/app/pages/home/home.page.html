@@ -1,33 +1,113 @@
 <ion-menu contentId="home-content">
   <ion-header>
-    <ion-toolbar>
-      <ion-title>Menú</ion-title>
+    <ion-toolbar class="menu-toolbar">
+      <ion-avatar slot="start" class="ion-margin-horizontal">
+        <img [src]="user?.avatarUrl" alt="User Avatar" />
+      </ion-avatar>
+      <h1>Hello {{ user?.name }}!</h1>
     </ion-toolbar>
   </ion-header>
   <ion-content>
-    <ion-list>
-      <ion-item routerLink="/">
-        <ion-icon slot="start" name="home"></ion-icon>
-        <ion-label>Home</ion-label>
-      </ion-item>
-    </ion-list>
+    <div class="menu-container">
+      <ion-list>
+        <ion-item (click)="changeAvatar()" lines="none">
+          <ion-icon slot="start" name="person-circle-outline"></ion-icon>
+          <ion-label>Change Avatar</ion-label>
+        </ion-item>
+        <ion-item (click)="logout()" class="logout-item">
+          <ion-icon slot="start" name="log-out-outline"></ion-icon>
+          <ion-label>Logout</ion-label>
+        </ion-item>
+      </ion-list>
+    </div>
   </ion-content>
 </ion-menu>
 
-<ion-header>
+<ion-header class="home-header">
   <ion-toolbar>
-    <ion-buttons slot="start">
+    <ion-buttons slot="start" class="ml-2">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>Movies</ion-title>
-    <ion-buttons slot="end">
-      <ion-button>
+    <ion-buttons slot="end" class="mr-2">
+      <ion-button (click)="toggleSearchBar()">
         <ion-icon slot="icon-only" name="search"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
+<ion-toolbar class="search-bar" [ngClass]="{'show': showSearchBar}">
+  <ion-searchbar [formControl]="searchControl"></ion-searchbar>
+</ion-toolbar>
+
 <ion-content [fullscreen]="true" id="home-content">
-  <ion-button (click)="logout()">Logout</ion-button>
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed" class="mb-2">
+    <ion-fab-button (click)="openAddMovieModal()">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  @if (moviesLoading) {
+  <ion-list>
+    <div *ngFor="let item of [0, 1, 2, 3, 4, 5]">
+      <div class="div-skeleton">
+        <ion-grid>
+          <ion-row class="h-100">
+            <ion-col size="5" class="">
+              <ion-skeleton-text
+                [animated]="true"
+                class="image-skeleton"
+              ></ion-skeleton-text>
+            </ion-col>
+            <ion-col>
+              <ion-row
+                class="mt-3 ion-align-items-center ion-justify-content-center"
+              >
+                <ion-skeleton-text
+                  [animated]="true"
+                  style="width: 65%; height: 24px"
+                ></ion-skeleton-text>
+              </ion-row>
+
+              <ion-row
+                class="mt-2 ion-align-items-center ion-justify-content-center"
+              >
+                <ion-skeleton-text
+                  [animated]="true"
+                  style="width: 80%"
+                ></ion-skeleton-text>
+                <ion-skeleton-text
+                  [animated]="true"
+                  style="width: 75%"
+                ></ion-skeleton-text>
+                <ion-skeleton-text
+                  [animated]="true"
+                  style="width: 35%"
+                ></ion-skeleton-text>
+              </ion-row>
+
+              <ion-row class="ion-justify-content-center mt-3 rating">
+                <ion-skeleton-text
+                  [animated]="true"
+                  style="width: 45%; height: 18px"
+                ></ion-skeleton-text> </ion-row></ion-col
+          ></ion-row>
+        </ion-grid>
+      </div>
+    </div>
+  </ion-list>
+  } @else {
+  <div *ngIf="movies.length == 0">
+    <ion-text>No movies to show. Add one to start rating!</ion-text>
+  </div>
+
+  <ion-list>
+    <app-movie-card
+      [movie]="movie"
+      *ngFor="let movie of filteredMovies"
+      (successMessageEmitter)="setSuccessMessage($event)"
+    ></app-movie-card>
+  </ion-list>
+  }
 </ion-content>

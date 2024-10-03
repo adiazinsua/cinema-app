@@ -1,0 +1,53 @@
+ion-card-title {
+  font-size: 1.25rem;
+}
+
+ion-card-header {
+  padding-top: 1rem;
+}
+
+ion-card-content {
+  font-size: 0.8rem;
+}
+
+ion-grid {
+  padding: 0;
+}
+
+ion-col {
+  padding: 0;
+}
+
+ion-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.rating {
+  font-size: 1.15rem;
+}
+
+ion-item-sliding.item-sliding-active-slide {
+  ion-item {
+    --border-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}
+
+ion-item {
+  --border-radius: 0.5rem;
+  --background: #434343;
+  --padding-start: 0px;
+  --min-height: 165px;
+}
+
+.edit-btn-border {
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+}
+
+ion-item-option {
+  font-size: 1.5rem;
+}

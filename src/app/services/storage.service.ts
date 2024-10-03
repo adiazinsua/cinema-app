@@ -1,86 +1,27 @@
-import { Preferences } from '@capacitor/preferences';
 import { Injectable } from '@angular/core';
+import { Storage } from '@ionic/storage-angular';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StorageService {
-  async getUser(): Promise<User | undefined> {
-    const ret = await Preferences.get({ key: 'user' });
-    if (ret.value) {
-      return JSON.parse(ret.value) as User;
-    }
-    return undefined;
+  constructor(private storage: Storage) {
+    this.init();
   }
 
-  async setUser(user: User) {
-    await Preferences.set({
-      key: 'user',
-      value: JSON.stringify(user),
-    });
+  async init() {
+    await this.storage.create();
   }
 
-  async clearUser() {
-    await Preferences.remove({ key: 'user' });
+  async setItem(key: string, value: any) {
+    await this.storage.set(key, value);
   }
 
-  //   async setFirstUse() {
-  //     await Preferences.set({
-  //       key: 'first-use',
-  //       value: 'true',
-  //     });
-  //   }
-
-  //   async getFirstUse(): Promise<boolean | undefined> {
-  //     const ret = await Preferences.get({ key: 'first-use' });
-  //     if (ret.value) {
-  //       return JSON.parse(ret.value) as boolean;
-  //     }
-  //     return undefined;
-  //   }
-
-  // private handleGetLoggedUser(user: User) {
-  //   if (user != null) {
-  //     this.router.navigateByUrl(routes.home());
-  //     return false
-  //   } else {
-  //     return true;
-  //   }
-  // }
-  async setRememberedUser(lastUser: LastUserLogged) {
-    await Preferences.set({
-      key: 'last-user-logged',
-      value: JSON.stringify(lastUser),
-    });
+  async getItem(key: string) {
+    return await this.storage.get(key);
   }
 
-  async getRememberedUser(): Promise<LastUserLogged | undefined> {
-    const ret = await Preferences.get({ key: 'last-user-logged' });
-    if (ret.value) {
-      return JSON.parse(ret.value) as LastUserLogged;
-    }
-    return undefined;
+  async removeItem(key: string) {
+    await this.storage.remove(key);
   }
-
-  async clearRememberedUser() {
-    await Preferences.remove({ key: 'last-user-logged' });
-  }
-}
-
-export interface User {
-  uid: string;
-  name: string;
-  //   mobilePushContactKey: string;
-}
-
-export interface LastUserLogged {
-  userId: number;
-  name: string;
-  idType: string;
-  idNumber: string;
-}
-
-export interface BiometricsActivation {
-  userId: number;
-  biometricsIdentifier: string;
 }
