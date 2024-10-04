@@ -51,4 +51,12 @@ ionic serve
 ```
 npm run start
 ```
-This will start a development server, and you can view the app in your browser at http://localhost:8100 (when running the app with Ionic CLI) or http://localhost:4200 (when running the app with npm).
+This will start a development server, and you can view the app in your browser at http://localhost:8100 (when running the app with Ionic CLI) or http://localhost:4200 (when running the app with npm). Simulate a mobile environment via browser recommended.
+
+
+## Test account (with 5 unrated movies) credentials
+```
+test@test.com
+Asdasd123!
+```
+
