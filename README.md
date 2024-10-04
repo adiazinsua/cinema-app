@@ -1,6 +1,6 @@
 
 # Fictional Cinema App
-Welcome to our Ionic Angular Cinema App! This application provides a seamless experience for movie enthusiasts to explore, rate, and manage their favorite films.
+This project is a fictional cinema app built with Ionic and Angular made as a technical challenge for Prex by Ailin Diaz Insua. This application provides a seamless experience for movie enthusiasts to explore, rate, and manage their favorite films.
 
 ## Features
 **User Authentication**
