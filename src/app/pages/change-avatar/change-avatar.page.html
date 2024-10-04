@@ -6,6 +6,23 @@
 </ion-toolbar>
 
 <ion-content class="ion-padding-horizontal">
+  @if (loading) {
+  <div class="avatar-container">
+    <ion-skeleton-text [animated]="true" class="avatar-skeleton" />
+  </div>
+  <ion-row class="ion-align-items-center ion-justify-content-center mt-3">
+    <ion-skeleton-text [animated]="true" style="width: 45%; height: 26px" />
+  </ion-row>
+  <ion-list class="avatars-list">
+    <div
+      *ngFor="let avatar of [0, 1, 2, 3, 4]"
+      class="ion-padding-horizontal"
+      style="margin: 0.5rem"
+    >
+      <ion-skeleton-text class="icon-option" [animated]="true" />
+    </div>
+  </ion-list>
+  } @else {
   <div class="avatar-container">
     <img [src]="selectedAvatarUrl || user?.avatarUrl" class="avatar-img" />
   </div>
@@ -13,7 +30,7 @@
   <ion-row class="ion-align-items-center ion-justify-content-center mt-3">
     <h3>Select an avatar</h3>
   </ion-row>
-  <ion-list class="icons-list">
+  <ion-list class="avatars-list">
     <ion-item
       *ngFor="let avatar of avatars"
       (click)="selectAvatar(avatar.url)"
@@ -33,4 +50,5 @@
     class="ion-margin-horizontal mt-5"
     >Save</ion-button
   >
+  }
 </ion-content>

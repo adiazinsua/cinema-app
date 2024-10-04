@@ -66,29 +66,37 @@ export class ApiUserService implements UserService {
     );
   }
 
-  createAccount(request: CreateAccountRequest): Observable<BaseResponse> {
+  createAccount(request: CreateAccountRequest): Observable<any> {
     this.loaderService.showLoader();
-    return this.getRandomAvatarUrl().pipe(
-      switchMap(avatarUrl =>
-        from(this.firebase.createUserWithEmailAndPassword(request.email, request.plainPassword)).pipe(
-          switchMap(userCredential => {
-            if (!userCredential.user) {
-              throw new Error(ErrorCodes.UserCreationFailed);
-            }
-            const newUser: User = {
-              uid: userCredential.user.uid,
-              email: request.email,
-              name: request.name,
-              avatarUrl: avatarUrl
-            };
-            return from(this.firestore.collection(this.usersCollection).doc(newUser.uid).set(newUser)).pipe(
-              map(() => newUser)
-            );
+    return from(this.firebase.createUserWithEmailAndPassword(request.email, request.plainPassword)).pipe(
+      switchMap((userCredential): Observable<any> => {
+        if (!userCredential.user) {
+          throw new Error(ErrorCodes.UserCreationFailed);
+        }
+        return of(userCredential.user);
+      }),
+      switchMap((user: any) => {
+        return this.firestore.collection<any>('avatars').get().pipe(
+          map(snapshot => {
+            this.loaderService.updateMessage("Setting up an avatar...");
+            const avatars = snapshot.docs.map(doc => doc.data().url);
+            const randomAvatarUrl = avatars[Math.floor(Math.random() * avatars.length)];
+            return { user, randomAvatarUrl };
           })
-        )
-      ),
-      map(user => ({ success: true, data: user } as BaseResponse)),
-      catchError(error => of({ errorMessage: getErrorMessage(error.code) })),
+        );
+      }),
+      switchMap(({ user, randomAvatarUrl }) => {
+        return from(this.firestore.collection('users').doc(user.uid).set({
+          email: request.email,
+          name: request.name,
+          avatarUrl: randomAvatarUrl
+        }));
+      }),
+      map(() => ({ success: true })),
+      catchError(error => {
+        console.log(error);
+        return of({ success: false, errorMessage: getErrorMessage(error.code) });
+      }),
       finalize(() => this.loaderService.hideLoader())
     );
   }
@@ -111,7 +119,7 @@ export class ApiUserService implements UserService {
   getAvatars(): Observable<any> {
     return this.firestore.collection<any>(this.avatarsCollection).valueChanges().pipe(
       map(avatars => {
-        return avatars.map(avatar => ({ ...avatar })); // Devuelve las películas
+        return avatars.map(avatar => ({ ...avatar }));
       })
     );
   }

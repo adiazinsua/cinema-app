@@ -5,36 +5,32 @@ import { CreateAccountPage } from './pages/create-account/create-account.page';
 import { HomePage } from './pages/home/home.page';
 import { PasswordRecoveryPage } from './pages/password-recovery/password-recovery.page';
 import { MovieDetailPage } from './pages/movie-detail/movie-detail.page';
-import { AuthGuard } from './services/guards/auth.guard';
 import { ChangeAvatarPage } from './pages/change-avatar/change-avatar.page';
 
 const routes: Routes = [
   {
     path: 'login',
-    component: LoginPage,
+    component: LoginPage
   },
   {
     path: 'create-account',
-    component: CreateAccountPage,
+    component: CreateAccountPage
   },
   {
     path: 'password-recovery',
-    component: PasswordRecoveryPage,
+    component: PasswordRecoveryPage
   },
   {
     path: '',
-    component: HomePage,
-    canActivate: [AuthGuard]
+    component: HomePage
   },
   {
     path: 'movie/:id',
-    component: MovieDetailPage,
-    canActivate: [AuthGuard]
+    component: MovieDetailPage
   },
   {
     path: 'change-avatar',
-    component: ChangeAvatarPage,
-    canActivate: [AuthGuard]
+    component: ChangeAvatarPage
   },
 ];
 

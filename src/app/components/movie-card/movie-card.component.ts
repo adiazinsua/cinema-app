@@ -19,7 +19,7 @@ export class MovieCardComponent implements OnInit {
   public movie!: Movie;
 
   @Output()
-  public successMessageEmitter: EventEmitter<string> = new EventEmitter<string>();
+  public deleteSuccess = new EventEmitter<void>();
 
   isImageLoaded = false;
   constructor(
@@ -35,13 +35,14 @@ export class MovieCardComponent implements OnInit {
 
   }
 
-
   update() {
     this.clearToast();
     var request = new EditMovieRequest();
     request.rating = this.movie.rating;
+    request.movieId = this.movie.id;
+    request.showLoader = false;
 
-    this.movieService.edit(this.movie.id, request, false).subscribe((response) => {
+    this.movieService.edit(request).subscribe((response) => {
       if (response.errorMessage) {
         this.setErrorMessage(response.errorMessage);
         return;
@@ -84,13 +85,12 @@ export class MovieCardComponent implements OnInit {
 
   deleteMovie() {
     this.movieService.delete(this.movie.id).subscribe((response) => {
-      console.log(response)
       if (response.errorMessage) {
         this.setErrorMessage(response.errorMessage);
         return;
+      } else {
+        this.deleteSuccess.emit();
       }
-
-      this.successMessageEmitter.emit(MOVIE_DELETED_SUCCESS_MESSAGE);
     })
   }
 
@@ -103,7 +103,6 @@ export class MovieCardComponent implements OnInit {
   }
 
   onImageLoad() {
-    console.log('loading')
     this.isImageLoaded = true;
   }
 

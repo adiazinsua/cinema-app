@@ -2,7 +2,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 20px 0;
+  margin-bottom: 2rem;
+  margin-top: 5rem;
 
   img {
     width: 150px;
@@ -12,7 +13,13 @@
   }
 }
 
-.icons-list {
+.avatar-skeleton {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+}
+
+.avatars-list {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -21,12 +28,12 @@
     width: auto;
     margin: 0.5rem;
     --min-height: 0;
+  }
 
-    .icon-option {
-      width: 75px;
-      height: 75px;
-      border-radius: 50%;
-    }
+  .icon-option {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
   }
 
   img {

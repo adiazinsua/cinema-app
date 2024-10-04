@@ -98,7 +98,7 @@
     </div>
   </ion-list>
   } @else {
-  <div *ngIf="movies.length == 0">
+  <div *ngIf="movies.length == 0" class="ion-text-center mt-5">
     <ion-text>No movies to show. Add one to start rating!</ion-text>
   </div>
 
@@ -106,7 +106,7 @@
     <app-movie-card
       [movie]="movie"
       *ngFor="let movie of filteredMovies"
-      (successMessageEmitter)="setSuccessMessage($event)"
+      (deleteSuccess)="this.getMovies()"
     ></app-movie-card>
   </ion-list>
   }

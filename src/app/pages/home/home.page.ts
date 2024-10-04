@@ -63,7 +63,8 @@ export class HomePage implements OnInit {
     this.moviesLoading = true;
     this.movieService.getMovies(this.user.uid).subscribe((response) => {
       this.movies = response;
-      console.log(response)
+      this.movies = this.movies.sort((a, b) => new Date(a.creationDate).getTime() - new Date(b.creationDate).getTime());
+
       this.moviesLoading = false;
       this.filteredMovies = [...this.movies];
     })
@@ -86,8 +87,6 @@ export class HomePage implements OnInit {
   }
 
   changeAvatar() {
-    console.log('navigaate forward')
-    console.log(this.user)
     this.navController.navigateRoot([routes.changeAvatar()], { state: { user: this.user } })
   }
 
@@ -133,8 +132,4 @@ export class HomePage implements OnInit {
     await this.toastService.dismissAllToasts();
   }
 
-  setMessageAfterDeletion(message: string) {
-    this.setSuccessMessage(message);
-    this.getMovies();
-  }
 }

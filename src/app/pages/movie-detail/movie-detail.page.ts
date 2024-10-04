@@ -48,8 +48,6 @@ export class MovieDetailPage implements OnInit {
   ngOnInit() {
     this.isReadonly = history?.state?.isReadonly ?? true;
     this.fromSlide = history?.state?.fromSlide;
-    console.log(this.fromSlide)
-
     this.activatedRoute.paramMap.subscribe(params => {
       this.movieId = params.get('id');
       if (this.movieId) {
@@ -92,16 +90,16 @@ export class MovieDetailPage implements OnInit {
     var request = new EditMovieRequest();
     request.description = this.form.value.description;
     request.rating = this.form.value.rating;
+    request.movieId = this.movieDetail.id,
 
-    this.movieService.edit(this.movieDetail.id, request).subscribe((response) => {
-      console.log(response, 123)
-      if (response.errorMessage) {
-        this.setErrorMessage(response.errorMessage);
-        return;
-      }
+      this.movieService.edit(request).subscribe((response) => {
+        if (response.errorMessage) {
+          this.setErrorMessage(response.errorMessage);
+          return;
+        }
 
-      this.redirectToHomeWithMessage(MOVIE_EDITED_SUCCESS_MESSAGE);
-    })
+        this.redirectToHomeWithMessage(MOVIE_EDITED_SUCCESS_MESSAGE);
+      })
   }
 
   setRating(rate: number, movieId: string) {
@@ -146,7 +144,6 @@ export class MovieDetailPage implements OnInit {
 
   deleteMovie() {
     this.movieService.delete(this.movieDetail.id).subscribe((response) => {
-      console.log(response)
       if (response.errorMessage) {
         this.setErrorMessage(response.errorMessage);
         return;

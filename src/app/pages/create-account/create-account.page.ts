@@ -15,6 +15,7 @@ import { ToastService } from 'src/app/services/toasts.service';
 import { UserService } from 'src/app/services/users.service';
 
 const ACCOUNT_CREATED_SUCCESS_MESSAGE = 'Account created successfully! You can now log in to your new account'
+const DEFAULT_API_ERROR_MESSAGE = 'Something went wrong!'
 
 export function SamePasswordBothInputs(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -77,14 +78,19 @@ export class CreateAccountPage implements OnInit {
     request.plainPassword = this.form.value.password;
     request.name = this.form.value.name;
 
-    this.userService.createAccount(request).subscribe((response) => {
-      if (response.errorMessage) {
-        this.setErrorMessage(response.errorMessage);
-        return;
+    this.userService.createAccount(request).subscribe({
+      next: (result) => {
+        if (result.errorMessage) {
+          this.setErrorMessage(result.errorMessage);
+          return;
+        } else {
+          this.redirectToLoginWithMessage(ACCOUNT_CREATED_SUCCESS_MESSAGE)
+        }
+      },
+      error: (error) => {
+        this.setErrorMessage(DEFAULT_API_ERROR_MESSAGE);
       }
-
-      this.redirectToLoginWithMessage(ACCOUNT_CREATED_SUCCESS_MESSAGE)
-    })
+    });
   }
 
   get showPasswordRequirements(): boolean {

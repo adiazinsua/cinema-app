@@ -1,21 +1,30 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
-import { LoginPage } from './login.page';
+import { AppModule } from 'src/app/app.module';
+import { MovieService } from 'src/app/services/movies.service';
+import { MockMovieService } from 'src/app/services/mock/movies.service.mock';
+import { HomePage } from './home.page';
+import { StorageService } from 'src/app/services/storage.service';
 
-// import { FolderPage } from './folder.page';
-
-describe('LoginPage', () => {
-  let component: LoginPage;
-  let fixture: ComponentFixture<LoginPage>;
+describe('HomePage', () => {
+  let component: HomePage;
+  let fixture: ComponentFixture<HomePage>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [LoginPage],
-      imports: [IonicModule.forRoot(), RouterModule.forRoot([])]
+      declarations: [HomePage],
+      imports: [IonicModule.forRoot(), RouterModule.forRoot([]), AppModule],
+      providers: [
+        {
+          provide: MovieService,
+          useClass: MockMovieService
+        },
+        StorageService
+      ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(LoginPage);
+    fixture = TestBed.createComponent(HomePage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

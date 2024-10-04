@@ -14,6 +14,7 @@ export class ChangeAvatarPage implements OnInit {
   user: any;
   avatars: any[] = [];
   selectedAvatarUrl: string | null = null;
+  public loading: boolean = true;
 
   constructor(
     private toastService: ToastService,
@@ -30,8 +31,8 @@ export class ChangeAvatarPage implements OnInit {
   loadAvatars() {
     this.usersService.getAvatars()
       .subscribe((response) => {
-        console.log(response)
         this.avatars = response
+        this.loading = false;
       });
   }
 

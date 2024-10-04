@@ -1,28 +1,28 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
-import { CreateAccountPage } from './create-account.page';
 import { AppModule } from 'src/app/app.module';
-import { UserService } from 'src/app/services/users.service';
-import { MockUserService } from 'src/app/services/mock/users.service.mock';
+import { MovieService } from 'src/app/services/movies.service';
+import { MockMovieService } from 'src/app/services/mock/movies.service.mock';
+import { AddmovieModalComponent } from './add-movie.component';
 
-describe('CreateAccountPage', () => {
-  let component: CreateAccountPage;
-  let fixture: ComponentFixture<CreateAccountPage>;
+describe('AddmovieModalComponent', () => {
+  let component: AddmovieModalComponent;
+  let fixture: ComponentFixture<AddmovieModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CreateAccountPage],
+      declarations: [AddmovieModalComponent],
       imports: [IonicModule.forRoot(), RouterModule.forRoot([]), AppModule],
       providers: [
         {
-          provide: UserService,
-          useClass: MockUserService
+          provide: MovieService,
+          useClass: MockMovieService
         }
       ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(CreateAccountPage);
+    fixture = TestBed.createComponent(AddmovieModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

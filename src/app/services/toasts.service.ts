@@ -7,7 +7,7 @@ import { EventType, Router } from '@angular/router';
   providedIn: 'root',
 })
 export class ToastService {
-  private static DEFAULT_DURATION = 1000 * 20;
+  private static DEFAULT_DURATION = 3000;
 
   private toastButtons: ToastButton[] = [
     {

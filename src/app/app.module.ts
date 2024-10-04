@@ -18,9 +18,8 @@ import { CreateAccountPage } from './pages/create-account/create-account.page';
 import { HomePage } from './pages/home/home.page';
 import { PasswordRecoveryPage } from './pages/password-recovery/password-recovery.page';
 import { MovieCardComponent } from './components/movie-card/movie-card.component';
-import { RatingStarsComponent } from './components/rating-stars/rating-stars.component';
 import { IonicStorageModule } from '@ionic/storage-angular';
-import { MovieService } from './services/movies.service';
+import { ApiMovieService, MovieService } from './services/movies.service';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { AddmovieModalComponent } from './modals/add-movie/add-movie.component';
 import { MovieDetailPage } from './pages/movie-detail/movie-detail.page';
@@ -36,7 +35,6 @@ import { ChangeAvatarPage } from './pages/change-avatar/change-avatar.page';
     PasswordRecoveryPage,
     HomePage,
     MovieCardComponent,
-    RatingStarsComponent,
     AddmovieModalComponent,
     MovieDetailPage,
     ChangeAvatarPage
@@ -61,8 +59,11 @@ import { ChangeAvatarPage } from './pages/change-avatar/change-avatar.page';
       provide: UserService,
       useClass: ApiUserService,
     },
+    {
+      provide: MovieService,
+      useClass: ApiMovieService,
+    },
     ToastService,
-    MovieService,
     DatePipe,
     LoaderService, LoaderService
   ],

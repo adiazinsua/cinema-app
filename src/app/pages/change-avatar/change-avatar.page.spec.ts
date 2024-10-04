@@ -1,18 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
-import { LoginPage } from './login.page';
+import { ChangeAvatarPage } from './change-avatar.page';
 import { UserService } from 'src/app/services/users.service';
 import { MockUserService } from 'src/app/services/mock/users.service.mock';
+import { AppModule } from 'src/app/app.module';
 
-describe('LoginPage', () => {
-  let component: LoginPage;
-  let fixture: ComponentFixture<LoginPage>;
+describe('ChangeAvatarPage', () => {
+  let component: ChangeAvatarPage;
+  let fixture: ComponentFixture<ChangeAvatarPage>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [LoginPage],
-      imports: [IonicModule.forRoot(), RouterModule.forRoot([])],
+      declarations: [ChangeAvatarPage],
+      imports: [IonicModule.forRoot(), RouterModule.forRoot([]), AppModule],
       providers: [
         {
           provide: UserService,
@@ -21,7 +22,7 @@ describe('LoginPage', () => {
       ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(LoginPage);
+    fixture = TestBed.createComponent(ChangeAvatarPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
